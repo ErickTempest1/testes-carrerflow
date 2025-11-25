@@ -47,3 +47,9 @@ npm run test:e2e
 
 # Verificar cobertura de código
 npm run test:cov
+
+# Executar todos os testes
+npm test
+
+# Modo watch (re-executa ao salvar arquivos)
+npx vitest
