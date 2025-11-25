@@ -1,69 +1,49 @@
-# 🚀 CarrerFlow
+## 🧪 Qualidade e Testes Automatizados
 
-Descrição breve do projeto (o que ele faz, objetivo principal).  
-*Exemplo: Plataforma X para integrar frontend e backend com arquitetura baseada em microserviços.*  
+O projeto **CarrerFlow** adota uma estratégia robusta de QA (Quality Assurance) para garantir a estabilidade tanto do Front-end quanto do Back-end. Nossa arquitetura de testes foi desenhada para validar regras de negócio críticas, segurança de dados e integridade das rotas.
 
----
+### 🛠️ Stack de Testes
 
-## 📂 Estrutura do Repositório
-
-O projeto segue a organização em **monorepo**, ou seja, todo o código (frontend, backend e microserviços) está centralizado neste repositório.  
-
-CarreFlow/  
-│── front/ # Código do frontend  
-│── back/ # Backend principal (API Gateway ou serviço central)  
-│── microservices/ # Conjunto de microserviços independentes  
-│── scripts/ # Scripts auxiliares (deploy, migração, jobs, etc.)  
-│── docs/ # Documentação do projeto  
-│── .github/workflows/ # Pipelines de CI/CD  
-│── README.md # Este arquivo  
-│── CONTRIBUTING.md # Guia de contribuição  
-
-
-### 🔹 `front/`
-- Contém o código do **frontend** (framework a ser definido, ex: React, Angular, Vue).  
-- Estrutura isolada com suas próprias dependências (`package.json`).  
-- Objetivo: fornecer a interface do usuário para interação com o sistema.  
-
-### 🔹 `back/`
-- Contém o **backend principal** em **Spring Boot**.  
-- Pode atuar como **API Gateway** ou **serviço central de orquestração**.  
-- Responsável por autenticação, roteamento e integração com os microserviços.  
-
-### 🔹 `microservices/`
-- Cada microserviço fica em sua própria pasta.  
-- São independentes
-
-
-### 🔹 `scripts/`
-- Scripts auxiliares que não pertencem diretamente ao front ou back.  
-- Podem incluir:  
-- Automação de deploy.  
-- Migração de banco de dados.  
-- Integrações (ex: chamadas Python para análise de dados).  
-
-### 🔹 `docs/`
-- Documentação geral do projeto.  
-- Pode incluir:
-- Diagramas de arquitetura.  
-- Especificações de API.  
-- Decisões técnicas.  
-
-### 🔹 `.github/workflows/`
-- Contém os arquivos de **CI/CD**.  
-- Exemplo:  
-- `front-ci.yml` → build e testes do frontend.  
-- `back-ci.yml` → build e testes do backend principal.  
-- `auth-service-ci.yml` → build/teste do microserviço de autenticação.  
+| Camada | Framework | Ferramentas Auxiliares | Foco |
+| :--- | :--- | :--- | :--- |
+| **Front-end** | **Vitest** | React Testing Library, JSDOM | Renderização de Componentes, Hooks, Interação do Usuário. |
+| **Back-end** | **Jest** | Supertest, SQLite (:memory:) | Regras de Negócio (Unitários), Rotas da API (E2E). |
 
 ---
 
-## 🛠️ Como rodar o projeto localmente
+### 📐 Estratégia e Cobertura
 
-*(Adicionar instruções passo a passo conforme forem sendo definidas — ex: clonar repo, instalar dependências, rodar front/back/microserviços, etc.)* 
+O plano de testes foi estruturado seguindo a **Pirâmide de Testes**, garantindo feedback rápido e confiabilidade.
+
+#### 1. Back-end (NestJS API)
+Validamos a API em dois níveis:
+* **Testes Unitários (`.spec.ts`):** Focados nos **Services**. Utilizamos *Mocks* para isolar o banco de dados e testar a lógica pura (ex: hashing de senha, validação de email duplicado).
+* **Testes Ponta-a-Ponta (`.e2e-spec.ts`):** Focados nos **Controllers**. Subimos uma instância da aplicação com um banco SQLite em memória para testar o fluxo completo da requisição HTTP (Auth -> Guard -> Controller -> Service -> DB).
+
+**Cenários Críticos Cobertos:**
+* ✅ **Autenticação:** Registro, Login, Geração de JWT e tratamento de erros (401/409).
+* ✅ **Segurança de Usuário:** Garantia de que senhas não são retornadas nas rotas GET.
+* ✅ **Gestão de Vagas:** CRUD completo e validação de que um usuário não pode alterar/excluir vagas de outro usuário.
+
+#### 2. Front-end (React)
+Adotamos a estratégia de **Co-localização** (testes próximos aos componentes).
+* **Testes de Integração:** Validação de formulários (Login/Cadastro), navegação e feedback visual.
+* **Testes de UI:** Verificação de renderização condicional (ex: Cards do Kanban, Modais).
 
 ---
 
-## 📄 Licença
-*(Adicionar tipo de licença escolhida, ex: MIT, Apache 2.0, etc.)*  
+### 🚀 Como Executar os Testes
 
+Para rodar a suíte de testes localmente, utilize os comandos abaixo na raiz de cada projeto.
+
+#### No Back-end (`/Back-end`)
+
+```bash
+# Rodar testes unitários (Services)
+npm run test
+
+# Rodar testes E2E (Rotas e Integração)
+npm run test:e2e
+
+# Verificar cobertura de código
+npm run test:cov
